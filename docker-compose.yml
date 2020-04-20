@@ -1,0 +1,21 @@
+#This single deployment will have 2 containers
+#running in the same pod.
+version: '3'
+services:
+    nginx:
+        build:
+            dockerfile: Dockerfile.dev
+            context: ./nginx
+        restart: always
+        ports:
+            - '80:80'
+            - '443:443'
+        depends_on: 
+            - api_java
+    api_java:
+        build: 
+            dockerfile: Dockerfile.dev
+            context: ./api
+        expose: 
+            - "8080"            
+        restart: always
