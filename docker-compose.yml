@@ -19,3 +19,33 @@ services:
         expose: 
             - "8080"            
         restart: always
+        environment:
+            - MYSQL_HOST=mysql
+            - MYSQL_DATABASE=api
+            - MYSQL_USER=safir
+            - MYSQL_PASSWORD=password
+            - REDIS_HOST=redis
+            - REDIS_PORT=6379
+        depends_on: 
+            - mysql
+            - redis
+    redis:
+        image: 'redis:latest'   
+        ports:
+            - '6379:6379' # needed to access from local machine
+        expose:
+            - '6379'                
+    mysql:
+        image: 'mysql:latest'
+        restart: always
+        environment:
+            - MYSQL_DATABASE=api
+            - MYSQL_USER=safir
+            - MYSQL_PASSWORD=password
+            - MYSQL_ROOT_PASSWORD=rootpassword
+        ports:
+            - '3306:3306'
+        expose:
+            - '3306'
+        volumes:
+            - ./my-db-file:/var/lib/mysql           
