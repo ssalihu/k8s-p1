@@ -17,7 +17,7 @@ services:
             dockerfile: Dockerfile.dev
             context: ./api
         expose: 
-            - "8080"            
+            - '8080'            
         restart: always
         environment:
             - MYSQL_HOST=mysql
@@ -26,9 +26,26 @@ services:
             - MYSQL_PASSWORD=password
             - REDIS_HOST=redis
             - REDIS_PORT=6379
+            - COUNTER_HOST=counter
+            - COUNTER_PORT=3070
         depends_on: 
             - mysql
             - redis
+    counter:
+        build: 
+            dockerfile: Dockerfile.dev
+            context: ./counter
+        volumes: 
+            - /app/node_modules
+            - ./counter:/app
+        restart: always
+        depends_on: 
+            - redis
+        expose:
+            - '3070'
+        environment:
+            - REDIS_HOST=redis
+            - REDIS_PORT=6379            
     redis:
         image: 'redis:latest'   
         ports:

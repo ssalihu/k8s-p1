@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mss.k8s.p1.api.dao.Employee;
 import com.mss.k8s.p1.api.dao.EmployeeRepository;
+import com.mss.k8s.p1.api.model.Sequence;
 import com.mss.k8s.p1.api.service.RedisEmployeeService;
+import com.mss.k8s.p1.api.service.SequenceService;
 
 @RestController
 class EmployeeController {
@@ -26,6 +28,9 @@ class EmployeeController {
   @Autowired
   RedisEmployeeService employeeRedisService;
 
+  @Autowired
+  SequenceService sequenceService;
+  
   EmployeeController(EmployeeRepository repository) {
     this.repository = repository;
   }
@@ -39,14 +44,21 @@ class EmployeeController {
 
   @PostMapping("/employees")
   Employee newEmployee(@RequestBody Employee newEmployee) {
-    return repository.save(newEmployee);
+	  
+	Sequence seq = sequenceService.getID();
+	if(seq!=null) {
+		newEmployee.setEmployeeID(Long.parseLong(seq.getSequence()));
+		return repository.save(newEmployee);
+	} else {
+		return new Employee();
+	}
   }
 
   // Single item
 
   @GetMapping("/employees/{id}")
   Employee one(@PathVariable Long id) {
-	  
+	
 	Employee emp = employeeRedisService.findById(id);
 
 	if(emp==null) {
