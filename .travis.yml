@@ -9,6 +9,6 @@ script:
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin        
 deploy:
     provider: script
-    script: bash ./deploy.sh        
+    script: bash ./deploy-to-hub.sh        
     on:
         branch: master
