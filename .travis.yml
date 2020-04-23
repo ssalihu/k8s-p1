@@ -5,6 +5,9 @@ env:
     global:
         - SHA=$(git rev-parse HEAD)    
         - CLOUDSDK_CORE_DISABLE_PROMPTS=1
+install:
+    - bundle install
+    
 deploy:
     provider: script
     script: bash ./deploy.sh
