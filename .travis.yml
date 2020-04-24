@@ -6,9 +6,19 @@ env:
         - SHA=$(git rev-parse HEAD)
         - CLOUDSDK_CORE_DISABLE_PROMPTS=1
 script:
-    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin        
-deploy:
-    provider: script
-    script: bash ./deploy-to-hub.sh        
-    on:
-        branch: master
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin    
+jobs:
+    include:
+        - stage: build docker image
+          script: 
+            - bash ./build-images.sh
+            - bash ./test-images.sh
+        - stage: 
+          script:
+            - bash ./stage-images.sh
+
+# deploy:
+#     provider: script
+#     script: bash ./deploy-to-hub.sh        
+#     on:
+#         branch: master
