@@ -5,15 +5,19 @@ env:
     global:
         - SHA=$(git rev-parse HEAD)
         - CLOUDSDK_CORE_DISABLE_PROMPTS=1
+before_install:
+    - docker build -t 1after/api-java-test -f ./client/Dockerfile.test ./api        
 script:
+    - docker run -e CI=true 1after/api-java-test mvn test
+after_success:
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin    
 jobs:
     include:
-        - stage: build docker image
+        - stage: build and stage docker images
           script: 
             - bash ./build-images.sh
             - bash ./stage-images.sh
-        - stage: stage
+        - stage: test docker image
           script:
             - bash ./test-images.sh
 
