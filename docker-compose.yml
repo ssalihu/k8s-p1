@@ -11,8 +11,8 @@ services:
             - '80:80'
             - '443:443'
         depends_on: 
-            - api_java
-    api_java:
+            - api
+    api:
         build: 
             dockerfile: Dockerfile.dev
             context: ./api
