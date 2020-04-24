@@ -1,3 +1,4 @@
+echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
 docker push 1after/api-java:latest
 docker push 1after/k8-p1-nginx:latest
 docker push 1after/counter:latest
