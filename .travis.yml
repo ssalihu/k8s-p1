@@ -13,7 +13,7 @@ jobs:
           script: 
             - bash ./build-images.sh
             - bash ./test-images.sh
-        - stage: 
+        - stage: stage
           script:
             - bash ./stage-images.sh
 
