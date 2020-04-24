@@ -12,10 +12,10 @@ jobs:
         - stage: build docker image
           script: 
             - bash ./build-images.sh
-            - bash ./test-images.sh
+            - bash ./stage-images.sh
         - stage: stage
           script:
-            - bash ./stage-images.sh
+            - bash ./test-images.sh
 
 # deploy:
 #     provider: script
