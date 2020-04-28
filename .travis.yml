@@ -33,6 +33,8 @@ jobs:
             - bash ./test-images.sh
 deploy:
     provider: script
-    - kubectl -f apply k8s/aws        
+    script: 
+        - bash deploy-to-aws.sh     
     on:
         branch: aws
+        
