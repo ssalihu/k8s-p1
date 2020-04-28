@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: api-java-deployment
+spec:
+    replicas: 3
+    selector:
+        matchLabels:
+            component: api-java
+    template:
+        metadata:
+            labels:
+                component: api-java
+        spec:
+            containers:
+                - name: api
+                  image: 1after/api-java
+                  ports:
+                    - containerPort: 8080
+                  env:
+                    - name: MYSQL_HOST
+                      value: mysql-cluster-ip-service
+                    - name:  MYSQL_DATABASE
+                      value: api
+                    - name: MYSQL_USER
+                      value: safir
+                    - name: REDIS_HOST
+                      value: redis-cluster-ip-service
+                    - name: REDIS_HOST
+                      value: '6379'
+                    - name: COUNTER_HOST
+                      value: counter-cluster-ip-service
+                    - name: COUNTER_PORT
+                      value: '3070'
+                    - name: MYSQL_PASSWORD
+                      valueFrom:
+                        secretKeyRef:
+                            name: mysql-vault
+                            key: mysqlpassword
+                  livenessProbe:
+                        httpGet:
+                            # when "host" is not defined, "PodIP" will be used
+                            # host: my-host
+                            # when "scheme" is not defined, "HTTP" scheme will be used. Only "HTTP" and "HTTPS" are allowed
+                            # scheme: HTTPS
+                            path: /ping
+                            port: 8080
+                            httpHeaders:
+                            - name: X-Custom-Header
+                              value: Awesome
+                        initialDelaySeconds: 60
+                        timeoutSeconds: 1                                             
+                  readinessProbe:
+                        httpGet:
+                            path: /ping
+                            port: 8080
+                        failureThreshold: 80
+                        periodSeconds: 10 
