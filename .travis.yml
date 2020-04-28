@@ -14,16 +14,16 @@ after_success:
 jobs:
     include:
         - stage: build and stage docker images
+          if: branch = master
           script: 
             - bash ./build-images.sh
             - bash ./stage-images.sh
         - stage: test docker image
+          if: branch = master
           script:
             - bash ./test-images.sh
         - stage: deploy to aws
           if: branch = aws
           script:
             - bash deploy-to-aws.sh
-          on:
-            branch: aws
         
