@@ -6,25 +6,22 @@ env:
         - SHA=$(git rev-parse HEAD)
         - CLOUDSDK_CORE_DISABLE_PROMPTS=1
 before_install:
-    - docker build -t 1after/api-java-test -f ./api/Dockerfile.test ./api        
-script:
-    - docker run -e CI=true 1after/api-java-test mvn test    
-after_success:
-    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin    
-install:
-    # Install aws cli
+    - curl https://sdk.cloud.google.com | bash > /dev/null
+    - source $HOME/google-cloud-sdk/path.bash.inc
+    - gcloud components install kubectl
     - pip install --user awscli
     - export PATH=$PATH:$HOME/.local/bin    
-    # Install kubectl
-    - curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
-    - chmod +x ./kubectl
-    - sudo mv kubectl /usr/local/bin    
-    # Setup default AWS credentials.
+    - docker build -t 1after/api-java-test -f ./api/Dockerfile.test ./api
     - aws configure set default.aws_access_key_id $DEFAULT_AWS_ACCESS_KEY_ID
     - aws configure set default.aws_secret_access_key $DEFAULT_AWS_SECRET_ACCESS_KEY
     # Setup alternative AWS credentials using an AWS Named Profile for testing.
     # - aws configure set aws_access_key_id $ALT_AWS_ACCESS_KEY_ID --profile $ALT_AWS_PROFILE
     # - aws configure set aws_secret_access_key $ALT_AWS_SECRET_ACCESS_KEY --profile $ALT_AWS_PROFILE    
+
+script:
+    - docker run -e CI=true 1after/api-java-test mvn test    
+after_success:
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin    
 jobs:
     include:
         - stage: build and stage docker images
