@@ -12,6 +12,9 @@ script:
 after_success:
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin    
 install:
+    # Install aws cli
+    - pip install --user awscli
+    - export PATH=$PATH:$HOME/.local/bin    
     # Install kubectl
     - curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
     - chmod +x ./kubectl
