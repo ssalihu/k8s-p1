@@ -14,6 +14,7 @@ before_install:
     - docker build -t 1after/api-java-test -f ./api/Dockerfile.test ./api
     - aws configure set default.aws_access_key_id $DEFAULT_AWS_ACCESS_KEY_ID
     - aws configure set default.aws_secret_access_key $DEFAULT_AWS_SECRET_ACCESS_KEY
+    - aws eks --region us-east-1 update-kubeconfig --name EmployeeTestCluster
     # Setup alternative AWS credentials using an AWS Named Profile for testing.
     # - aws configure set aws_access_key_id $ALT_AWS_ACCESS_KEY_ID --profile $ALT_AWS_PROFILE
     # - aws configure set aws_secret_access_key $ALT_AWS_SECRET_ACCESS_KEY --profile $ALT_AWS_PROFILE    
