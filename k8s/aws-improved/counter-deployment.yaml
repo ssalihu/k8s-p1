@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: counter-deployment
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            component: counter
+    template:
+        metadata:
+            labels:
+                component: counter
+        spec:
+            containers:
+                - name: counter
+                  image: 1after/counter
+                  ports:
+                    - containerPort: 3070
+                  env:
+                    - name: REDIS_HOST
+                      value: redis-cluster-ip-service
+                    - name: REDIS_PORT
+                      value: '6379'              
+                  livenessProbe:
+                    httpGet:
+                        # when "host" is not defined, "PodIP" will be used
+                        # host: my-host
+                        # when "scheme" is not defined, "HTTP" scheme will be used. Only "HTTP" and "HTTPS" are allowed
+                        # scheme: HTTPS
+                        path: /ping
+                        port: 3070
+                        httpHeaders:
+                        - name: X-Custom-Header
+                          value: Awesome
+                    initialDelaySeconds: 15
+                    timeoutSeconds: 1                                             
+                  readinessProbe:
+                    httpGet:
+                        path: /ping
+                        port: 3070
+                    failureThreshold: 20
+                    periodSeconds: 10                             
